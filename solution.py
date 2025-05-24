@@ -57,11 +57,6 @@ try:
                 control.set_cmd_vel(0.1, 0, 1) # STC! Test to fine tune.
             control.start_keyboard_control()
 
-            
-
-            
-
-
 
     if challengeLevel == 2:
         while rclpy.ok():
