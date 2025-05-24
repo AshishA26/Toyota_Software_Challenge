@@ -8,7 +8,7 @@ from sensor_msgs.msg import LaserScan
 
 
 # Variable for controlling which level of the challenge to test -- set to 0 for pure keyboard control
-challengeLevel = 0
+challengeLevel = 1
 
 # Set to True if you want to run the simulation, False if you want to run on the real robot
 is_SIM = True
@@ -40,19 +40,21 @@ try:
 
 
     if challengeLevel == 1:
-        Padding = 0.3 # Assume standard units 'm'. STC! Test to fine tune.
+        Padding = 0.5 # Assume standard units 'm'. STC! Test to fine tune.
         while rclpy.ok():
             rclpy.spin_once(robot, timeout_sec=0.1)
             time.sleep(0.1)
             # Write your solution here for challenge level 1
 
-            msg1, msg2 = LaserScan(), LaserScan()
-            res = [lidar.detect_obstacle_in_cone(msg1, Padding, 0, 90), lidar.detect_obstacle_in_cone(msg2, Padding, 180, 90)]                       
-            
-            if res[0][0] != -1:
-                minDist, minAngle = res[0]
+            # msg1, msg2 = LaserScan(), LaserScan()
+            msg = lidar.checkScan()
+            res = lidar.detect_obstacle_in_cone(msg, Padding, 0, 20)                   
+            print(res)
+            if res[0] != -1:
+                print("Sensed dist", res)
+                minDist, minAngle = res
                 control.stop_keyboard_control()
-                control.rotate(minAngle, 1) 
+                # control.rotate(minAngle, 1) 
                 control.set_cmd_vel(-0.1, 0, 3)
                 control.start_keyboard_control()
 
