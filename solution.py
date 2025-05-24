@@ -40,7 +40,9 @@ try:
 
 
     if challengeLevel == 1:
-        Padding = 0.5 # Assume standard units 'm'. STC! Test to fine tune.
+        Padding = 0.5 # Assume standard units 'm'. STC! Test to fine tune
+        control.start_keyboard_control()
+
         while rclpy.ok():
             rclpy.spin_once(robot, timeout_sec=0.1)
             time.sleep(0.1)
@@ -48,14 +50,11 @@ try:
 
             msg = lidar.checkScan()
             front, _ = lidar.detect_obstacle_in_cone(msg, Padding, 0, 20) 
-            back, _ = lidar.detect_obstacle_in_cone(msg, Padding, -180, 20)
-
-            driveDist = -1 if front==back==-1 else -1*front if back==-1 else back if front==-1 else -front if front == min(front, back) else back
-
-            if driveDist != -1:
+            # back, _ = lidar.detect_obstacle_in_cone(msg, Padding, -180, 20)
+            # driveDist = -1 if front==back==-1 else -1*front if back==-1 else back if front==-1 else -front if front == min(front, back) else back
+            if front != -1:
                 control.stop_keyboard_control()
-                sign = -1 if driveDist<0 else 1
-                control.set_cmd_vel(sign*0.1, 0, 3)
+                control.set_cmd_vel(-1, 0, 1)
                 control.start_keyboard_control()
 
     if challengeLevel == 2:
