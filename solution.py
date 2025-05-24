@@ -73,25 +73,44 @@ try:
             time.sleep(0.1)
             
     if challengeLevel == 3:
+
+        def adjust_position(range, bearing_rad, desired_range, desired_bearing_rad):
+            #Calculate Requirered Movement
+            (current_x, current_y) = (range * math.cos(bearing_rad * (math.pi / 180)), range * math.sin(bearing_rad * (math.pi / 180)))
+            (desired_x, desired_y) = (desired_range * math.cos(desired_bearing_rad * (math.pi / 180)), desired_range * math.sin(desired_bearing_rad * (math.pi / 180)))
+            (move_x, move_y) = (current_x - desired_x, current_y - desired_y)
+            move_range = math.sqrt(move_x^2 + move_y^2)
+            move_angle_deg = math.tan(move_y / move_x) * (180 / math.pi)
+
+            #Move (assuming units of range and robot speed cancel out) (sub out 1 for speed)
+            control.rotate(move_angle_deg, 1)
+            control.set_cmd_vel(1, 0, move_range / 1)
+            control.rotate(move_angle_deg, -1)
+              
         tag_instructions = {
-            "tag1": (45, 1),
-            "tag2": (45, 1),
-            "tag3": (45, 1)
+            "1": (45, 1),
+            "2": (45, 1),
+            "3": (45, 1),
+            "4": (45, 1),
+            "5": (45, 1),
+            "6": (45, 1)
         }
-        (tag_id, range, bearing, elevation) = camera.estimate_apriltag_pose(camera.rosImg_to_cv2)
-        (angle, direction) = tag_instructions.get(tag_id)
-        control.rotate(angle, direction)
-
-        camera.checkImageRelease()
-        img = camera.rosImg_to_cv2()
-        print(camera.estimate_apriltag_pose(img))
-
-
 
         while rclpy.ok():
+            camera.checkCamera()
             rclpy.spin_once(robot, timeout_sec=0.1)
+            (tag_id, range, bearing, elevation) = camera.estimate_apriltag_pose(camera.rosImg_to_cv2)
+            (angle, direction) = tag_instructions.get(tag_id)
+            if (tag_id != None):
+                control.set_cmd_vel(0,0,0.5)
+                control.rotate(angle, direction)
+            control.move_forward()
             time.sleep(0.1)
+
             # Write your solution here for challenge level 3 (or 3.5)
+
+
+
 
     if challengeLevel == 4:
         while rclpy.ok():
