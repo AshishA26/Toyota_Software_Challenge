@@ -41,7 +41,6 @@ try:
 
     if challengeLevel == 1:
         Padding = 0.5 # Assume standard units 'm'. STC! Test to fine tune
-        control.start_keyboard_control()
 
         while rclpy.ok():
             rclpy.spin_once(robot, timeout_sec=0.1)
@@ -49,13 +48,13 @@ try:
             # Write your solution here for challenge level 1
 
             msg = lidar.checkScan()
-            front, _ = lidar.detect_obstacle_in_cone(msg, Padding, 0, 20) 
-            # back, _ = lidar.detect_obstacle_in_cone(msg, Padding, -180, 20)
-            # driveDist = -1 if front==back==-1 else -1*front if back==-1 else back if front==-1 else -front if front == min(front, back) else back
+            front, _ = lidar.detect_obstacle_in_cone(msg, Padding, 0, 10) 
             if front != -1:
+                print("Wall detected! Moving back")
                 control.stop_keyboard_control()
-                control.set_cmd_vel(-1, 0, 1)
+                control.set_cmd_vel(-0.3, 0, 0.3)
                 control.start_keyboard_control()
+                print("Done moving back")
 
     if challengeLevel == 2:
         while rclpy.ok():
