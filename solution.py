@@ -46,17 +46,16 @@ try:
             time.sleep(0.1)
             # Write your solution here for challenge level 1
 
-            # msg1, msg2 = LaserScan(), LaserScan()
             msg = lidar.checkScan()
-            res = lidar.detect_obstacle_in_cone(msg, Padding, 0, 20)                   
-            print(res)
-            if res[0] != -1:
-                print("Sensed dist", res)
-                minDist, minAngle = res
+            front, _ = lidar.detect_obstacle_in_cone(msg, Padding, 0, 20) 
+            back, _ = lidar.detect_obstacle_in_cone(msg, Padding, -180, 20)
+
+            driveDist = -1 if front==back==-1 else -1*front if back==-1 else back if front==-1 else -front if front == min(front, back) else back
+
+            if driveDist != -1:
                 control.stop_keyboard_control()
-                # control.rotate(minAngle, 1) 
-                control.set_cmd_vel(-0.1, 0, 3)
-                control.start_keyboard_control()
+                sign = -1 if driveDist<0 else 1
+                control.set_cmd_vel(sign*0.1, 0, 3)
 
     if challengeLevel == 2:
         while rclpy.ok():
