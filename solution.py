@@ -40,13 +40,30 @@ try:
 
 
     if challengeLevel == 1:
+        Padding = 0.1 # Assume standard units 'm'
+        control.start_keyboard_control()
         while rclpy.ok():
             rclpy.spin_once(robot, timeout_sec=0.1)
             time.sleep(0.1)
             # Write your solution here for challenge level 1
             # It is recommended you use functions for aspects of the challenge that will be resused in later challenges
             # For example, create a function that will detect if the robot is too close to a wall
-            print(lidar.checkScan())
+            
+
+            msg = lidar.checkScan()
+            radius = msg.ranges
+            mRadius = min(radius)
+
+            if mRadius < Padding:
+                control.stop_keyboard_control
+                control.set_cmd_vel(0.1, 0, 1)
+            control.start_keyboard_control()
+
+            
+
+            
+
+
 
     if challengeLevel == 2:
         while rclpy.ok():
