@@ -56,6 +56,7 @@ try:
                 control.stop_keyboard_control()
                 sign = -1 if driveDist<0 else 1
                 control.set_cmd_vel(sign*0.1, 0, 3)
+                control.start_keyboard_control()
 
     if challengeLevel == 2:
         while rclpy.ok():
