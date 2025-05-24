@@ -4,6 +4,7 @@ import numpy as np
 import math
 import time
 from ultralytics import YOLO
+from sensor_msgs.msg import LaserScan
 
 
 # Variable for controlling which level of the challenge to test -- set to 0 for pure keyboard control
@@ -39,21 +40,20 @@ try:
 
 
     if challengeLevel == 1:
-        Padding = 0.1 # Assume standard units 'm'. STC! Test to fine tune.
+        Padding = 0.3 # Assume standard units 'm'. STC! Test to fine tune.
         while rclpy.ok():
             rclpy.spin_once(robot, timeout_sec=0.1)
             time.sleep(0.1)
             # Write your solution here for challenge level 1
-            # It is recommended you use functions for aspects of the challenge that will be resused in later challenges
-            # For example, create a function that will detect if the robot is too close to a wall
-            msg1, msg2 = sensor_msgs.msg.LaserScan(), sensor_msgs.msg.LaserScan()
-            res = [lidar.detect_obstacle_in_cone(msg1, 0.3, 0, 90), lidar.detect_obstacle_in_cone(msg2, 0.3, 180, 90)]
+
+            msg1, msg2 = LaserScan(), LaserScan()
+            res = [lidar.detect_obstacle_in_cone(msg1, Padding, 0, 90), lidar.detect_obstacle_in_cone(msg2, Padding, 180, 90)]                       
             
-            minDist,minAngle = res[0] if max(res[0][0], res[1][0])==res[0][0] else res[1]
-            if minDist < Padding:
+            if res[0][0] != -1:
+                minDist, minAngle = res[0]
                 control.stop_keyboard_control()
-                control.rotate(minAngle, 1) # STC, determine optimal direction of rotation-use of IMU but may be slower due to additional polling.
-                control.set_cmd_vel(-0.1, 0, 3) # STC, 1s maybe too little.
+                control.rotate(minAngle, 1) 
+                control.set_cmd_vel(-0.1, 0, 3)
                 control.start_keyboard_control()
 
     if challengeLevel == 2:
