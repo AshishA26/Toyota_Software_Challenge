@@ -5,6 +5,7 @@ import math
 import time
 from ultralytics import YOLO
 
+RobotVelocity = 0.2394
 
 def static_obstacle_avoidence(self, padding : float , lidar : Lidar, control : Control):
     # Detects distance to obstacles within padding distance using LiDAR. Move back away from obstacle.
@@ -32,9 +33,9 @@ def adjust_apriltag_position(range : float, bearing_rad : float, elevation_rad :
 
     #Move (assuming units of range and robot speed cancel out) (sub out 1 for speed)
     control.rotate(move_angle_deg, 1)
-    control.set_cmd_vel(1, 0, move_range / 1)
+    speed = RobotVelocity*1
+    control.set_cmd_vel(speed, 0, move_range / speed)
     control.rotate(move_angle_deg, -1)
-
 
 
 def apriltag_rotation(camera : Camera, control : Control):
