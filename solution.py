@@ -5,6 +5,9 @@ import math
 import time
 from ultralytics import YOLO
 
+# Variable for base robot speed for 1 revolution per second
+RobotVelocity = 0.2394
+
 # Variable for controlling which level of the challenge to test -- set to 0 for pure keyboard control
 challengeLevel = 0
 
@@ -60,11 +63,13 @@ try:
             time.sleep(0.1)
             # Write your solution here for challenge level 3 (or 3.5)
             aprilTagInfo = camera.estimate_apriltag_pose(camera.rosImg_to_cv2()) # April tags should be 6, 7, 3, 5 from the bottom right corner of Loop B. 
-            uuid = aprilTagInfo[0][0]
-            if aprilTagInfo[0] == []:
+            if aprilTagInfo == []:
+                uuid = aprilTagInfo[0][0]
                 # Normalize position-Mathew.
                 if uuid == 6:
                     # instructions.
+                    adjust_position(*aprilTagInfo[0][1:], , , )
+                    
                     _=_
                 elif uuid == 7:
                     # instructions.
@@ -100,3 +105,23 @@ finally:
     robot.destroy_node()
     if rclpy.ok():
         rclpy.shutdown()
+
+
+def adjust_position(range, bearing_rad, elevation_rad,  desired_range, desired_bearing_rad, desired_elevation_rad):
+            #Calculate Requirered Movement
+            (current_x, current_y) = (range * math.cos(bearing_rad * (math.pi / 180)) * math.cos(elevation_rad * (math.pi / 180)), range * math.sin(bearing_rad * (math.pi / 180)) * math.cos(elevation_rad * (math.pi / 180)))
+            (desired_x, desired_y) = (desired_range * math.cos(desired_bearing_rad * (math.pi / 180)) * math.cos(desired_elevation_rad * (math.pi / 180)), desired_range * math.sin(desired_bearing_rad * (math.pi / 180)) * math.cos(desired_elevation_rad * (math.pi / 180)))
+            (move_x, move_y) = (current_x - desired_x, current_y - desired_y)
+            move_range = math.sqrt(move_x^2 + move_y^2)
+            move_angle_deg = math.tan(move_y / move_x) * (180 / math.pi)
+
+            #Move (assuming units of range and robot speed cancel out) (sub out 1 for speed)
+            control.rotate(move_angle_deg, 1)
+            speed = RobotVelocity*1 # RoboVel * Revolutions
+            control.set_cmd_vel(speed , 0, move_range / speed) # Radius ≈ 0.038 m 
+            control.rotate(move_angle_deg, -1)
+
+
+# list[tuple[int, float, float, float]
+def normalize_pos(tuple):
+    return _
