@@ -33,9 +33,10 @@ def adjust_apriltag_position(range : float, bearing_rad : float, elevation_rad :
 
     #Move (assuming units of range and robot speed cancel out) (sub out 1 for speed)
     control.rotate(move_angle_deg, 1)
-    speed = RobotVelocity*1
-    control.set_cmd_vel(speed, 0, move_range / speed)
+    speed = RobotVelocity*0.2
+    control.set_cmd_vel(0.2, 0, move_range / speed)
     control.rotate(move_angle_deg, -1)
+    print("Move Range: " + str(move_range) + " Move Angle: " + str(move_angle_deg))
 
 
 def apriltag_rotation(camera : Camera, control : Control):
