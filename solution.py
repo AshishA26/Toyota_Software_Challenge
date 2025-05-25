@@ -74,10 +74,10 @@ try:
             
     if challengeLevel == 3:
 
-        def adjust_position(range, bearing_rad, desired_range, desired_bearing_rad):
+        def adjust_position(range, bearing_rad, elevation_rad,  desired_range, desired_bearing_rad, desired_elevation_rad):
             #Calculate Requirered Movement
-            (current_x, current_y) = (range * math.cos(bearing_rad * (math.pi / 180)), range * math.sin(bearing_rad * (math.pi / 180)))
-            (desired_x, desired_y) = (desired_range * math.cos(desired_bearing_rad * (math.pi / 180)), desired_range * math.sin(desired_bearing_rad * (math.pi / 180)))
+            (current_x, current_y) = (range * math.cos(bearing_rad * (math.pi / 180)) * math.cos(elevation_rad * (math.pi / 180)), range * math.sin(bearing_rad * (math.pi / 180)) * math.cos(elevation_rad * (math.pi / 180)))
+            (desired_x, desired_y) = (desired_range * math.cos(desired_bearing_rad * (math.pi / 180)) * math.cos(desired_elevation_rad * (math.pi / 180)), desired_range * math.sin(desired_bearing_rad * (math.pi / 180)) * math.cos(desired_elevation_rad * (math.pi / 180)))
             (move_x, move_y) = (current_x - desired_x, current_y - desired_y)
             move_range = math.sqrt(move_x^2 + move_y^2)
             move_angle_deg = math.tan(move_y / move_x) * (180 / math.pi)
