@@ -75,6 +75,9 @@ try:
                 elif uuid == 5:
                     #instructions.
                     _
+            else:
+                # Panic.
+                _
 
     if challengeLevel == 4:
         while rclpy.ok():
