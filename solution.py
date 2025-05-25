@@ -10,7 +10,7 @@ challengeLevel = 1
 
 # Set to True if you want to run the simulation, False if you want to run on the real robot
 is_SIM = True
-
+RobotVelocity = 0.2394
 # Set to True if you want to run in debug mode with extra print statements, False otherwise
 Debug = False
 
@@ -84,7 +84,8 @@ try:
 
             #Move (assuming units of range and robot speed cancel out) (sub out 1 for speed)
             control.rotate(move_angle_deg, 1)
-            control.set_cmd_vel(1, 0, move_range / 1)
+            speed = RobotVelocity*1 # RoboVel * Revolutions
+            control.set_cmd_vel(speed , 0, move_range / speed) # Radius ≈ 0.038 m 
             control.rotate(move_angle_deg, -1)
               
         tag_instructions = {
