@@ -20,12 +20,12 @@ def static_obstacle_avoidence(self, padding : float , lidar : Lidar, control : C
 def wait_at_stopsign(self, min_box_height : float, camera : Camera, control : Control):
     print("Fill in here")
 
-def adjust_apriltag_position(self, range : float, bearing_rad : float, elevation_rad : float, desired_range : float, desired_bearing_rad : float, desired_elevation_rad : float, control : Control):
+def adjust_apriltag_position(range : float, bearing_rad : float, elevation_rad : float, desired_range_2d : float, desired_bearing_rad : float, control : Control):
     # Detect orientation relative to april tag. Adjust to the desired orientation.
 
     #Calculate requirered movement
     (current_x, current_y) = (range * math.cos(bearing_rad * (math.pi / 180)) * math.cos(elevation_rad * (math.pi / 180)), range * math.sin(bearing_rad * (math.pi / 180)) * math.cos(elevation_rad * (math.pi / 180)))
-    (desired_x, desired_y) = (desired_range * math.cos(desired_bearing_rad * (math.pi / 180)) * math.cos(desired_elevation_rad * (math.pi / 180)), desired_range * math.sin(desired_bearing_rad * (math.pi / 180)) * math.cos(desired_elevation_rad * (math.pi / 180)))
+    (desired_x, desired_y) = (desired_range_2d * math.cos(desired_bearing_rad * (math.pi / 180)), desired_range_2d * math.sin(desired_bearing_rad * (math.pi / 180)))
     (move_x, move_y) = (current_x - desired_x, current_y - desired_y)
     move_range = math.sqrt(move_x^2 + move_y^2)
     move_angle_deg = math.tan(move_y / move_x) * (180 / math.pi)
@@ -37,7 +37,7 @@ def adjust_apriltag_position(self, range : float, bearing_rad : float, elevation
 
 
 
-def apriltag_rotation(self, camera : Camera, control : Control):
+def apriltag_rotation(camera : Camera, control : Control):
     # Detect april tag and perorm roation.
 
     # tag_instructions: maps april tag identifiers to required rotation angle (in degrees), direction, desired range from april tag, and desired bearing from april tag (in radians)
@@ -49,12 +49,11 @@ def apriltag_rotation(self, camera : Camera, control : Control):
         "5": (45, 1, 100, 4),
         "6": (45, 1, 100, 4)
     }
-    camera.checkCamera()
     (tag_id, range, bearing_rad, elevation_rad) = camera.estimate_apriltag_pose(camera.rosImg_to_cv2)
     (angle_deg, direction, desired_range, desired_bearing_rad) = tag_instructions.get(tag_id)
     if (tag_id != None):
         control.set_cmd_vel(0,0,0.5)
-        adjust_apriltag_position(self, range, bearing_rad, elevation_rad, desired_range, desired_bearing_rad)
+        adjust_apriltag_position(range, bearing_rad, elevation_rad, desired_range, desired_bearing_rad)
         control.rotate(angle_deg, direction)
     
 
