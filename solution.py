@@ -74,6 +74,7 @@ try:
             time.sleep(0.1)
             
     if challengeLevel == 3:
+        padding = 0.3
         while rclpy.ok():
             rclpy.spin_once(robot, timeout_sec=0.1)
             time.sleep(0.1)
@@ -86,8 +87,21 @@ try:
                 print(uuid)
                 if uuid == 7:
                     # instructions.
-                    funcs.adjust_apriltag_position(*aprilTagInfo[0][1:], 1, -5, control)
+                    funcs.adjust_apriltag_position(*aprilTagInfo[0][1:], 1, 0, control)
+                    print("Done april tag")
+                    done_april_tag = False
+                    while not done_april_tag:
+                        msg = lidar.checkScan()
+                        front, _ = lidar.detect_obstacle_in_cone(msg, padding, 0, 10) 
+                        if front != -1:
+                            control.set_cmd_vel(0, 0, 1)
+                            control.rotate(90, 1)
+                            done_april_tag=True
+                        else:
+                            control.set_cmd_vel(0.2, 0, 0.2)
                     
+
+
             else:
                 # Panic.
                 pass

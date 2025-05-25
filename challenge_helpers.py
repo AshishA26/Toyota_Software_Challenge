@@ -26,6 +26,7 @@ def adjust_apriltag_position(range_3D : float, bearing_rad : float, elevation_ra
     print("Inputs: %d, %d, %d, %d, %d\n", range_3D, bearing_rad, elevation_rad, desired_range_2d, desired_bearing_rad)
     elevation_rad *= (math.pi/180) 
     bearing_rad *= (math.pi/180)
+    desired_bearing_rad *= math.pi/180
     range_2D = range_3D*math.cos(elevation_rad)
     print("2D-Range: %d\n", range_2D)
 
@@ -42,7 +43,7 @@ def adjust_apriltag_position(range_3D : float, bearing_rad : float, elevation_ra
     
     move_distance = math.hypot(move_x, move_y) * 0.25
     move_heading_rad = math.atan2(move_y, move_x)
-    move_heading_deg = math.degrees(move_heading_rad)+90
+    move_heading_deg = math.degrees(move_heading_rad)-180
     print("Move %d units, at %d\n", move_distance, move_heading_deg)
 
     #Move (assuming units of range and robot speed cancel out) (sub out 1 for speed)
