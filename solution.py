@@ -78,10 +78,28 @@ try:
             camera.checkCamera()
             rclpy.spin_once(robot, timeout_sec=0.1)
             time.sleep(0.1)
-            funcs.apriltag_rotation(camera, control)
-            
-
             # Write your solution here for challenge level 3 (or 3.5)
+            aprilTagInfo = camera.estimate_apriltag_pose(camera.rosImg_to_cv2()) # April tags should be 6, 7, 3, 5 from the bottom right corner of Loop B. 
+            if aprilTagInfo == []:
+                uuid = aprilTagInfo[0][0]
+                # Normalize position-Mathew.
+                if uuid == 6:
+                    # instructions.
+                    adjust_position(*aprilTagInfo[0][1:], , , )
+                    
+                    _=_
+                elif uuid == 7:
+                    # instructions.
+                    _
+                elif uuid == 3:
+                    # instructions.
+                    _
+                elif uuid == 5:
+                    #instructions.
+                    _
+            else:
+                # Panic.
+                _
 
 
 
