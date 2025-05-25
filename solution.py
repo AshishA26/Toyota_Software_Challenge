@@ -85,7 +85,7 @@ try:
                 # Normalize position-Mathew.
                 if uuid == 6:
                     # instructions.
-                    adjust_position(*aprilTagInfo[0][1:], , , )
+                    funcs.adjust_apriltag_position(*aprilTagInfo[0][1:], 0.2, 0, control)
                     
                     _=_
                 elif uuid == 7:
