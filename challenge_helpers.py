@@ -21,22 +21,32 @@ def static_obstacle_avoidence(self, padding : float , lidar : Lidar, control : C
 def wait_at_stopsign(self, min_box_height : float, camera : Camera, control : Control):
     print("Fill in here")
 
-def adjust_apriltag_position(range : float, bearing_rad : float, elevation_rad : float, desired_range_2d : float, desired_bearing_rad : float, control : Control):
+def adjust_apriltag_position(range_3D : float, bearing_rad : float, elevation_rad : float, desired_range_2d : float, desired_bearing_rad : float, control : Control):
     # Detect orientation relative to april tag. Adjust to the desired orientation.
+    print("Inputs: %d, %d, %d, %d, %d\n", range_3D, bearing_rad, elevation_rad, desired_range_2d, desired_bearing_rad)
+    elevation_rad, bearing_rad *= (2*math.pi/180), (2*math.pi/180)
+    range_2D = range_3D*math.cos(elevation_rad)
+    print("2D-Range: %d\n", range_2D)
+    current_x = range_2D*math.cos(desired_bearing_rad)
+    current_y = range_2D*math.sin(desired_bearing_rad)
 
-    #Calculate requirered movement
-    (current_x, current_y) = (range * math.cos(bearing_rad * (math.pi / 180)) * math.cos(elevation_rad * (math.pi / 180)), range * math.sin(bearing_rad * (math.pi / 180)) * math.cos(elevation_rad * (math.pi / 180)))
-    (desired_x, desired_y) = (desired_range_2d * math.cos(desired_bearing_rad * (math.pi / 180)), desired_range_2d * math.sin(desired_bearing_rad * (math.pi / 180)))
-    (move_x, move_y) = (current_x - desired_x, current_y - desired_y)
-    move_range = math.hypot(move_x, move_y)
-    move_angle_deg = math.atan2(move_y, move_x) * (180 / math.pi)
+    desired_x = desired_range_2d*math.cos(desired_bearing_rad)
+    desired_y = desired_range_2d*math.sin(desired_bearing_rad)
+    print("Current x-y: (%d, %d).... Desired x-y: (%d, %d)\n", current_x, current_y, desired_x, desired_y)
+    move_x = desired_x - current_x
+    move_y = desired_y - current_y
+    print("Move to (%d, %d)\n", move_x, move_y)
+    move_distance = math.hypot(move_x, move_y) * 0.25
+    move_heading_rad = math.atan2(move_y, move_x)
+    move_heading_deg = math.degrees(move_heading_rad)
+    print("Move %d units, at %d\n", move_distance, move_heading_deg)
 
     #Move (assuming units of range and robot speed cancel out) (sub out 1 for speed)
-    control.rotate(move_angle_deg, 1)
-    speed = RobotVelocity*0.2
-    control.set_cmd_vel(0.2, 0, move_range / speed)
-    control.rotate(move_angle_deg, -1)
-    print("Move Range: " + str(move_range) + " Move Angle: " + str(move_angle_deg))
+    # control.rotate(move_angle_deg, 1)
+    # speed = RobotVelocity*0.2
+    # control.set_cmd_vel(0.2, 0, move_range / speed)
+    # control.rotate(move_angle_deg, -1)
+    # print("Move Range: " + str(move_range) + " Move Angle: " + str(move_angle_deg))
 
 
 def apriltag_rotation(camera : Camera, control : Control):
