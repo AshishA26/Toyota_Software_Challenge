@@ -9,7 +9,7 @@ from ultralytics import YOLO
 challengeLevel = 1
 
 # Set to True if you want to run the simulation, False if you want to run on the real robot
-is_SIM = True
+is_SIM = False
 
 # Set to True if you want to run in debug mode with extra print statements, False otherwise
 Debug = False
@@ -55,16 +55,22 @@ try:
                 print("Done moving back")
 
     if challengeLevel == 2:
-        min_box_size = 8
+        max_y2_val = 0
+        if is_SIM:
+            max_y2_val = 50
+        else:
+            max_y2_val = 119
         flag = True
         while rclpy.ok():
+            camera.checkImageRelease()
             # Write your solution here for challenge level 2
             (detected, x1, y1, x2, y2) = camera.ML_predict_stop_sign(camera.rosImg_to_cv2())
-            box_size = math.sqrt((x2 - x1)^2 + (y2 - y1)^2)
+            y2_val = abs(y2)
+            print(y2_val)
             if (detected == False):
                 print("Reseting stopping flag")
                 flag = True
-            if(detected == True and box_size > min_box_size and flag == True):
+            if(detected == True and y2_val < max_y2_val and flag == True):
                 print("Detected stop sign, stopping for 3 seconds")
                 flag = False
                 control.stop_keyboard_control
