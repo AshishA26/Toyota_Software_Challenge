@@ -55,22 +55,22 @@ try:
                 print("Done moving back")
 
     if challengeLevel == 2:
-        min_box_height = 0
+        max_y2_val = 0
         if is_SIM:
-            min_box_height = 50
+            max_y2_val = 50
         else:
-            min_box_height = 119
+            max_y2_val = 119
         flag = True
         while rclpy.ok():
             camera.checkImageRelease()
             # Write your solution here for challenge level 2
             (detected, x1, y1, x2, y2) = camera.ML_predict_stop_sign(camera.rosImg_to_cv2())
-            box_height = abs(y2)
-            print(box_height)
+            y2_val = abs(y2)
+            print(y2_val)
             if (detected == False):
                 print("Reseting stopping flag")
                 flag = True
-            if(detected == True and box_height < min_box_height and flag == True):
+            if(detected == True and y2_val < max_y2_val and flag == True):
                 print("Detected stop sign, stopping for 3 seconds")
                 flag = False
                 control.stop_keyboard_control
