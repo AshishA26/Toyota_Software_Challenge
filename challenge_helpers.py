@@ -27,9 +27,9 @@ def adjust_apriltag_position(range : float, bearing_rad : float, elevation_rad :
     #Calculate requirered movement
     (current_x, current_y) = (range * math.cos(bearing_rad * (math.pi / 180)) * math.cos(elevation_rad * (math.pi / 180)), range * math.sin(bearing_rad * (math.pi / 180)) * math.cos(elevation_rad * (math.pi / 180)))
     (desired_x, desired_y) = (desired_range_2d * math.cos(desired_bearing_rad * (math.pi / 180)), desired_range_2d * math.sin(desired_bearing_rad * (math.pi / 180)))
-    (move_x, move_y) = (desired_x - current_x, desired_y - current_y)
-    move_range = math.sqrt(move_x^2 + move_y^2)
-    move_angle_deg = math.tan(move_y / move_x) * (180 / math.pi)
+    (move_x, move_y) = (current_x - desired_x, current_y - desired_y)
+    move_range = math.hypot(move_x, move_y)
+    move_angle_deg = math.atan2(move_y, move_x) * (180 / math.pi)
 
     #Move (assuming units of range and robot speed cancel out) (sub out 1 for speed)
     control.rotate(move_angle_deg, 1)
