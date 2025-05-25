@@ -7,7 +7,7 @@ from ultralytics import YOLO
 import challenge_helpers as funcs
 
 # Variable for controlling which level of the challenge to test -- set to 0 for pure keyboard control
-challengeLevel = 1
+challengeLevel = 3
 
 # Set to True if you want to run the simulation, False if you want to run on the real robot
 is_SIM = True
@@ -75,31 +75,22 @@ try:
             
     if challengeLevel == 3:
         while rclpy.ok():
-            camera.checkCamera()
             rclpy.spin_once(robot, timeout_sec=0.1)
             time.sleep(0.1)
             # Write your solution here for challenge level 3 (or 3.5)
+            camera.checkImageRelease()
             aprilTagInfo = camera.estimate_apriltag_pose(camera.rosImg_to_cv2()) # April tags should be 6, 7, 3, 5 from the bottom right corner of Loop B. 
-            if aprilTagInfo == []:
+            if aprilTagInfo != []:
                 uuid = aprilTagInfo[0][0]
                 # Normalize position-Mathew.
-                if uuid == 6:
+                print(uuid)
+                if uuid == 7:
                     # instructions.
-                    funcs.adjust_apriltag_position(*aprilTagInfo[0][1:], 0.2, 0, control)
+                    funcs.adjust_apriltag_position(*aprilTagInfo[0][1:], 1, -5, control)
                     
-                    _=_
-                elif uuid == 7:
-                    # instructions.
-                    _
-                elif uuid == 3:
-                    # instructions.
-                    _
-                elif uuid == 5:
-                    #instructions.
-                    _
             else:
                 # Panic.
-                _
+                pass
 
 
 
