@@ -87,7 +87,7 @@ try:
                 print(uuid)
                 if uuid == 7:
                     # instructions.
-                    funcs.adjust_apriltag_position(*aprilTagInfo[0][1:], 1, 0, control)
+                    funcs.adjust_apriltag_position(*aprilTagInfo[0][1:], 0.2, 0, control)
                     print("Done april tag")
                     done_april_tag = False
                     while not done_april_tag:
@@ -99,6 +99,7 @@ try:
                             done_april_tag=True
                         else:
                             control.set_cmd_vel(0.2, 0, 0.2)
+                # Put in stop signs and uuid stuff
                     
 
 
