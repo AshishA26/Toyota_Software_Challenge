@@ -73,25 +73,26 @@ try:
             time.sleep(0.1)
             
     if challengeLevel == 3:
-        tag_instructions = {
-            "tag1": (45, 1),
-            "tag2": (45, 1),
-            "tag3": (45, 1)
-        }
-        (tag_id, range, bearing, elevation) = camera.estimate_apriltag_pose(camera.rosImg_to_cv2)
-        (angle, direction) = tag_instructions.get(tag_id)
-        control.rotate(angle, direction)
-
-        camera.checkImageRelease()
-        img = camera.rosImg_to_cv2()
-        print(camera.estimate_apriltag_pose(img))
-
-
-
         while rclpy.ok():
             rclpy.spin_once(robot, timeout_sec=0.1)
             time.sleep(0.1)
             # Write your solution here for challenge level 3 (or 3.5)
+            aprilTagInfo = camera.estimate_apriltag_pose(camera.rosImg_to_cv2()) # April tags should be 6, 7, 3, 5 from the bottom right corner of Loop B. 
+            uuid = aprilTagInfo[0][0]
+            if aprilTagInfo[0] == []:
+                # Normalize position.
+                if uuid == 6:
+                    # instructions.
+                    _
+                elif uuid == 7:
+                    # instructions.
+                    _
+                elif uuid == 3:
+                    # instructions.
+                    _
+                elif uuid == 5:
+                    #instructions.
+                    _
 
     if challengeLevel == 4:
         while rclpy.ok():
