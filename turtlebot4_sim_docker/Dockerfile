@@ -35,5 +35,7 @@ RUN grep -qxF "source /opt/ros/humble/setup.bash" /root/.bashrc || \
     grep -qxF "export TURTLEBOT3_MODEL=waffle_pi" /root/.bashrc || \
     echo "export TURTLEBOT3_MODEL=waffle_pi" >> /root/.bashrc
 
+RUN sudo apt-get update && apt-get install mesa-utils -y
+
 # Set the default command to run bash so that when you launch the container, you get a shell with the proper environment
 CMD [ "bash" ]
