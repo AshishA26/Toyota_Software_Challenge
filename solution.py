@@ -6,7 +6,7 @@ import time
 from ultralytics import YOLO
 
 # Variable for controlling which level of the challenge to test -- set to 0 for pure keyboard control
-challengeLevel = 1
+challengeLevel = 2
 
 # Set to True if you want to run the simulation, False if you want to run on the real robot
 is_SIM = True
@@ -55,16 +55,18 @@ try:
                 print("Done moving back")
 
     if challengeLevel == 2:
-        min_box_size = 8
+        min_box_height = 86 # 86 in sim, 52 in real world
         flag = True
         while rclpy.ok():
+            camera.checkImageRelease()
             # Write your solution here for challenge level 2
             (detected, x1, y1, x2, y2) = camera.ML_predict_stop_sign(camera.rosImg_to_cv2())
-            box_size = math.sqrt((x2 - x1)^2 + (y2 - y1)^2)
+            box_height = abs(x2 - x1) # Use x2-x1 in sim, y2-y1 in real world
+            print(box_height)
             if (detected == False):
                 print("Reseting stopping flag")
                 flag = True
-            if(detected == True and box_size > min_box_size and flag == True):
+            if(detected == True and box_height > min_box_height and flag == True):
                 print("Detected stop sign, stopping for 3 seconds")
                 flag = False
                 control.stop_keyboard_control
@@ -73,24 +75,25 @@ try:
             time.sleep(0.1)
             
     if challengeLevel == 3:
-        tag_instructions = {
-            "tag1": (45, 1),
-            "tag2": (45, 1),
-            "tag3": (45, 1)
-        }
-        (tag_id, range, bearing, elevation) = camera.estimate_apriltag_pose(camera.rosImg_to_cv2)
-        (angle, direction) = tag_instructions.get(tag_id)
-        control.rotate(angle, direction)
+        # tag_instructions = {
+        #     "tag1": (45, 1),
+        #     "tag2": (45, 1),
+        #     "tag3": (45, 1)
+        # }
+        # (tag_id, range, bearing, elevation) = camera.estimate_apriltag_pose(camera.rosImg_to_cv2)
+        # (angle, direction) = tag_instructions.get(tag_id)
+        # control.rotate(angle, direction)
 
-        camera.checkImageRelease()
-        img = camera.rosImg_to_cv2()
-        print(camera.estimate_apriltag_pose(img))
 
 
 
         while rclpy.ok():
             rclpy.spin_once(robot, timeout_sec=0.1)
             time.sleep(0.1)
+
+            camera.checkImageRelease()
+            img = camera.rosImg_to_cv2()
+            print(camera.estimate_apriltag_pose(img))
             # Write your solution here for challenge level 3 (or 3.5)
 
     if challengeLevel == 4:
